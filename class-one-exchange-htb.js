@@ -150,12 +150,23 @@ function ClassOneExchangeHtb(configs) {
         /* ---------------------- PUT CODE HERE ------------------------------------ */
         var queryObj = {};
         var callbackId = System.generateUniqueId();
-
-        /* Change this to your bidder endpoint.*/
-        var baseUrl = Browser.getProtocol() + '//someAdapterEndpoint.com/bid';
+        var baseUrl = Browser.getProtocol() + '//ht-integration.c1exchange.com:9000/ht'; // Q: Does our endpoint support https?
 
         /* ---------------- Craft bid request using the above returnParcels --------- */
+        var totalParcels = returnParcels.length;
+        var bids = returnParcels;
+        queryObj.adunits = totalParcels;
 
+        for(var i = 0; i < totalParcels; i++) {
+            let bid = bids[i].xSlotRef;
+            let bidKey = 'a' + i.toString() + 's';
+            let sizeStr = bid.size.reduce(function(prev, current) { return prev + (prev === '' ? '' : ',') + current.join('x') }, '');
+            queryObj.site = bid.siteID;
+            queryObj[bidKey] = '[' +sizeStr + ']';
+            //TODO: 1. confirm how to add ad unit ids
+            //      2. add cache busting
+
+        }
 
         /* -------------------------------------------------------------------------- */
 
