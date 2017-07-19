@@ -38,6 +38,7 @@ var Inspector = require('../../../libs/external/schema-inspector.js');
 *    "configs": {
 *        "xSlots": {
 *            "xSlot1": {
+                 "adId": "div-gpt-ad-149819308100",
 *                "siteID": "999",
 *                "sizes": [ [300, 250], [300, 600] ]
 *            },
@@ -63,7 +64,10 @@ var partnerValidator = function (configs) {
                     '*': {
                         type: 'object',
                         properties: {
-                            siteId: {
+                            adId: {
+                                type: 'string'
+                            },
+                            siteID: {
                                 type: 'string',
                                 minLength: 1
                             },

@@ -150,24 +150,40 @@ function ClassOneExchangeHtb(configs) {
         /* ---------------------- PUT CODE HERE ------------------------------------ */
         var queryObj = {};
         var callbackId = System.generateUniqueId();
-        var baseUrl = Browser.getProtocol() + '//ht-integration.c1exchange.com:9000/ht'; // Q: Does our endpoint support https?
+        var baseUrl = Browser.getProtocol() + '//ht-integration.c1exchange.com:9000/ht';
 
-        /* ---------------- Craft bid request using the above returnParcels --------- */
-        var totalParcels = returnParcels.length;
+        var parcelsAmount = returnParcels.length;
         var bids = returnParcels;
-        queryObj.adunits = totalParcels;
+        queryObj.adunits = parcelsAmount;
 
-        for(var i = 0; i < totalParcels; i++) {
+        for(var i = 0; i < parcelsAmount; i++) {
             let bid = bids[i].xSlotRef;
-            let bidKey = 'a' + i.toString() + 's';
-            let sizeStr = bid.size.reduce(function(prev, current) { return prev + (prev === '' ? '' : ',') + current.join('x') }, '');
+            let bidSizeKey = 'a' + (i+1).toString() + 's';
+            let sizeStr = bid.sizes.reduce(function(prev, current) { return prev + (prev === '' ? '' : ',') + current.join('x') }, '');
             queryObj.site = bid.siteID;
-            queryObj[bidKey] = '[' +sizeStr + ']';
-            //TODO: 1. confirm how to add ad unit ids
-            //      2. add cache busting
+            queryObj[bidSizeKey] = '[' +sizeStr + ']';
+            //TODO: confirm how to add ad unit ids
+
+            // we only map one ad size to the floor price in a bid at this moment
+            if('floorPriceMap' in bid) {
+                let adUnitSize = bid.sizes[0].join('x');
+                if(adUnitSize in bid.floorPriceMap) {
+                    let floorPriceKey =  'a' + (i+1).toString() + 'p';
+                    queryObj[floorPriceKey] = bid.floorPriceMap[adUnitSize];
+                }
+            }
+
+            if('endpoint' in bid) {
+                baseUrl = Browser.getProtocol() + bid.endpoint;
+            }
+
+            if('dspid' in bid) {
+                queryObj.dspid = bid.dspid;
+            }
 
         }
 
+        queryObj.rid = new Date().getTime(); // cache busting
         /* -------------------------------------------------------------------------- */
 
         return {
@@ -188,6 +204,8 @@ function ClassOneExchangeHtb(configs) {
      * If the endpoint does not have an appropriate field for this, set the profile's
      * callback type to CallbackTypes.CALLBACK_NAME and omit this function.
      */
+
+     // C1X endpoint won't return an arbitrary ID, therefore omit this func
     function adResponseCallback(adResponse) {
         /* get callbackId from adResponse here */
         var callbackId = 0;
@@ -261,7 +279,6 @@ function ClassOneExchangeHtb(configs) {
             var curBid;
 
             for (var i = 0; i < bids.length; i++) {
-
                 /**
                  * This section maps internal returnParcels and demand returned from the bid request.
                  * In order to match them correctly, they must be matched via some criteria. This
@@ -269,7 +286,7 @@ function ClassOneExchangeHtb(configs) {
                  * key to a key that represents the placement in the configuration and in the bid responses.
                  */
 
-                if (curReturnParcel.xSlotRef.someCriteria === bids[i].someCriteria) {
+                if (curReturnParcel.xSlotRef.adId === bids[i].adId) {
                     curBid = bids[i];
                     break;
                 }
@@ -294,10 +311,10 @@ function ClassOneExchangeHtb(configs) {
             /* Using the above variable, curBid, extract various information about the bid and assign it to
             * these local variables */
 
-            var bidPrice = curBid.price; /* the bid price for the given slot */
-            var bidSize = [curBid.width, curBid.height]; /* the size of the given slot */
-            var bidCreative = curBid.adm; /* the creative/adm for the given slot that will be rendered if is the winner. */
-            var bidDealId = curBid.dealid; /* the dealId if applicable for this slot. */
+            var bidPrice = curBid.cpm;
+            var bidSize = [curBid.width, curBid.height];
+            var bidCreative = curBid.ad;
+            // var bidDealId = curBid.dealid;
 
             /* ---------------------------------------------------------------------------------------*/
 
@@ -381,9 +398,9 @@ function ClassOneExchangeHtb(configs) {
 
         /* ---------- Please fill out this partner profile according to your module ------------*/
         __profile = {
-            partnerId: 'ClassOneExchangeHtb', // PartnerName
-            namespace: 'ClassOneExchangeHtb', // Should be same as partnerName
-            statsId: 'COX', // Unique partner identifier
+            partnerId: 'C1XHtb', // PartnerName
+            namespace: 'C1XHtb', // Should be same as partnerName
+            statsId: 'C1X', // Unique partner identifier
             version: '2.0.0',
             targetingType: 'slot',
             enabledAnalytics: {
@@ -400,14 +417,14 @@ function ClassOneExchangeHtb(configs) {
                 }
             },
             targetingKeys: { // Targeting keys for demand, should follow format ix_{statsId}_id
-                id: 'ix_cox_id',
-                om: 'ix_cox_cpm',
-                pm: 'ix_cox_cpm',
-                pmid: 'ix_cox_dealid'
+                id: 'ix_c1x_id',
+                om: 'ix_c1x_cpm',
+                pm: 'ix_c1x_cpm',
+                pmid: 'ix_c1x_dealid'
             },
             lineItemType: Constants.LineItemTypes.ID_AND_SIZE,
-            callbackType: Partner.CallbackTypes.ID, // Callback type, please refer to the readme for details
-            architecture: Partner.Architectures.SRA, // Request architecture, please refer to the readme for details
+            callbackType: Partner.CallbackTypes.CALLBACK_NAME,
+            architecture: Partner.Architectures.SRA,
             requestType: Partner.RequestTypes.ANY // Request type, jsonp, ajax, or any.
         };
         /* ---------------------------------------------------------------------------------------*/
