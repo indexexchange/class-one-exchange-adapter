@@ -157,14 +157,14 @@ function C1XHtb(configs) {
         queryObj.adunits = parcelsAmount;
 
 
-        // TODO: siteId, pixel ID
+        // TODO: pixel ID, site ID
         for(var i = 0; i < parcelsAmount; i++) {
             let bid = bids[i].xSlotRef;
             let bidAdUnitIdKey = 'a' + (i+1).toString();
             let bidSizeKey = 'a' + (i+1).toString() + 's';
             let floorPriceKey =  'a' + (i+1).toString() + 'p';
 
-            queryObj.site = bid.siteId;
+            // queryObj.site = bid.siteId;
             queryObj[bidAdUnitIdKey] = bid.adId;
 
             let sizeStr = bid.sizes.reduce(function(prev, current) { return prev + (prev === '' ? '' : ',') + current.join('x') }, '');
@@ -274,27 +274,27 @@ function C1XHtb(configs) {
          /* ---------- Process adResponse and extract the bids into the bids array ------------*/
 
         var bids = adResponse;
+        //console.log(bids);
 
         /* --------------------------------------------------------------------------------- */
 
         for (var j = 0; j < returnParcels.length; j++) {
             var curReturnParcel = returnParcels[j];
+            // console.log(curReturnParcel);
 
             /* ----------- Fill this out to find a matching bid for the current parcel ------------- */
             var curBid;
 
-            for (var i = 0; i < bids.length; i++) {
-                /**
-                 * This section maps internal returnParcels and demand returned from the bid request.
-                 * In order to match them correctly, they must be matched via some criteria. This
-                 * is usually some sort of placements or inventory codes. Please replace the someCriteria
-                 * key to a key that represents the placement in the configuration and in the bid responses.
-                 */
+            /**
+             * This section maps internal returnParcels and demand returned from the bid request.
+             * In order to match them correctly, they must be matched via some criteria. This
+             * is usually some sort of placements or inventory codes. Please replace the someCriteria
+             * key to a key that represents the placement in the configuration and in the bid responses.
+             */
 
-                if (curReturnParcel.xSlotRef.adId === bids[i].adId) {
-                    curBid = bids[i];
-                    break;
-                }
+            if (curReturnParcel.xSlotRef.adId in bids) {
+                curBid = bids[curReturnParcel.xSlotRef.adId];
+                console.log('matched!');
             }
 
             /* ------------------------------------------------------------------------------------*/
@@ -304,7 +304,7 @@ function C1XHtb(configs) {
             headerStatsInfo[curReturnParcel.htSlot.getId()] = [curReturnParcel.xSlotName];
 
             /* No matching bid found so its a pass */
-            if (!curBid) {
+            if (!curBid || curBid.pass) {
                 if (__profile.enabledAnalytics.requestTime) {
                     __baseClass._emitStatsEvent(sessionId, 'hs_slot_pass', headerStatsInfo);
                 }
@@ -319,7 +319,7 @@ function C1XHtb(configs) {
             var bidPrice = curBid.cpm;
             var bidSize = [curBid.width, curBid.height];
             var bidCreative = curBid.ad;
-            // var bidDealId = curBid.dealid;
+            var bidDealId = null;
 
             /* ---------------------------------------------------------------------------------------*/
 
@@ -383,6 +383,8 @@ function C1XHtb(configs) {
             );
             curReturnParcel.targeting.pubKitAdId = pubKitAdId;
             //? }
+
+            console.log(curReturnParcel);
         }
     }
 
@@ -409,7 +411,7 @@ function C1XHtb(configs) {
             version: '2.0.0',
             targetingType: 'slot',
             enabledAnalytics: {
-                requestTime: true
+                requestTime: false
             },
             features: {
                 demandExpiry: {

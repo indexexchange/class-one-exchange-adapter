@@ -118,7 +118,11 @@ describe('generateRequestObj', function () {
             /* Write unit tests to verify that your bid request url contains the correct
                 * request params, url, etc.
                 */
+            var requestObjData = requestObject.data;
+
             expect(requestObject).to.exist;
+            expect(requestObjData).to.exist;
+            expect(requestObjData).to.have.property('a1');
         });
         /* -----------------------------------------------------------------------*/
 

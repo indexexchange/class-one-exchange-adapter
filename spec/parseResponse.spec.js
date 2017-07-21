@@ -72,8 +72,7 @@ describe('parseResponse', function () {
     var partnerModule = partnerModule(partnerConfig);
     var partnerProfile = partnerModule.profile;
 
-    /* Generate dummy return parcels based on MRA partner profile */
-    var returnParcels;
+    /* Generate dummy return parcels based on SRA partner profile */
     var result, expectedValue, mockData, returnParcels;
 
     describe('should correctly parse bids:', function () {
@@ -85,13 +84,12 @@ describe('parseResponse', function () {
             mockData = responseData.bid;
 
             /* IF SRA, parse all parcels at once */
-            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
+            if (partnerProfile.architecture) { 
+                partnerModule.parseResponse(1, mockData, returnParcels);
+            }
 
-            for (var i = 0; i < returnParcels.length; i++) {
-
-                /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
-
+            for(var i = 0; i < returnParcels.length; i++) {
+                //console.log(returnParcels[i]);
                 var result = inspector.validate({
                     type: 'object',
                     properties: {
@@ -136,7 +134,7 @@ describe('parseResponse', function () {
                         }
                     }
                 }, returnParcels[i]);
-
+                console.log(result.valid);
                 expect(result.valid, result.format()).to.be.true;
             }
         });
