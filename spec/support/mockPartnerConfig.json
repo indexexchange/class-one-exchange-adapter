@@ -2,22 +2,19 @@
     "timeout": 1000,
     "xSlots": {
         "1": {
-            "placementId": "54321",
-            "sizes": [
-                [300, 250]
-            ]
+            "adId": "div-gpt-ad-149819308100",
+            "siteId": "999",
+            "sizes": [ [300, 250], [300, 600] ]
         },
         "2": {
-            "placementId": "12345",
-            "sizes": [
-                [300, 600]
-            ]
+            "adId": "div-gpt-ad-222",
+            "siteId": "999",
+            "sizes": [ [300, 250] ]
         },
         "3": {
-            "placementId": "654321",
-            "sizes": [
-                [728, 90]
-            ]
+            "adId": "div-gpt-ad-333",
+            "siteId": "999",
+            "sizes": [ [728, 90] ]
         }
     },
     "mapping": {

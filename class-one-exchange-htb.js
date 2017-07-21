@@ -1,5 +1,5 @@
 /**
- * @author:    Partner
+ * @author:    C1X Inc.
  * @license:   UNLICENSED
  *
  * @copyright: Copyright (c) 2017 by Index Exchange. All rights reserved.
@@ -44,7 +44,7 @@ var Whoopsie = require('whoopsie.js');
  *
  * @class
  */
-function ClassOneExchangeHtb(configs) {
+function C1XHtb(configs) {
     /* =====================================
      * Data
      * ---------------------------------- */
@@ -156,19 +156,24 @@ function ClassOneExchangeHtb(configs) {
         var bids = returnParcels;
         queryObj.adunits = parcelsAmount;
 
+
+        // TODO: siteId, pixel ID
         for(var i = 0; i < parcelsAmount; i++) {
             let bid = bids[i].xSlotRef;
+            let bidAdUnitIdKey = 'a' + (i+1).toString();
             let bidSizeKey = 'a' + (i+1).toString() + 's';
+            let floorPriceKey =  'a' + (i+1).toString() + 'p';
+
+            queryObj.site = bid.siteId;
+            queryObj[bidAdUnitIdKey] = bid.adId;
+
             let sizeStr = bid.sizes.reduce(function(prev, current) { return prev + (prev === '' ? '' : ',') + current.join('x') }, '');
-            queryObj.site = bid.siteID;
             queryObj[bidSizeKey] = '[' +sizeStr + ']';
-            //TODO: confirm how to add ad unit ids
 
             // we only map one ad size to the floor price in a bid at this moment
             if('floorPriceMap' in bid) {
                 let adUnitSize = bid.sizes[0].join('x');
                 if(adUnitSize in bid.floorPriceMap) {
-                    let floorPriceKey =  'a' + (i+1).toString() + 'p';
                     queryObj[floorPriceKey] = bid.floorPriceMap[adUnitSize];
                 }
             }
@@ -400,7 +405,7 @@ function ClassOneExchangeHtb(configs) {
         __profile = {
             partnerId: 'C1XHtb', // PartnerName
             namespace: 'C1XHtb', // Should be same as partnerName
-            statsId: 'C1X', // Unique partner identifier
+            statsId: 'c1x', // Unique partner identifier
             version: '2.0.0',
             targetingType: 'slot',
             enabledAnalytics: {
@@ -447,9 +452,9 @@ function ClassOneExchangeHtb(configs) {
         var bidTransformerConfigs = {
             //? if (FEATURES.GPT_LINE_ITEMS) {
             targeting: {
-                inputCentsMultiplier: 1, // Input is in cents
-                outputCentsDivisor: 1, // Output as cents
-                outputPrecision: 0, // With 0 decimal places
+                inputCentsMultiplier: 100, // Input is in dollars
+                outputCentsDivisor: 100, // Output as dollars
+                outputPrecision: 2, // With 2 decimal places
                 roundingType: 'FLOOR', // jshint ignore:line
                 floor: 0,
                 buckets: [{
@@ -539,4 +544,4 @@ function ClassOneExchangeHtb(configs) {
 // Exports /////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-module.exports = ClassOneExchangeHtb;
+module.exports = C1XHtb;

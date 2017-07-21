@@ -67,7 +67,7 @@ var partnerValidator = function (configs) {
                             adId: {
                                 type: 'string'
                             },
-                            siteID: {
+                            siteId: {
                                 type: 'string',
                                 minLength: 1
                             },

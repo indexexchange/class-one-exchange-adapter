@@ -49,7 +49,7 @@ describe('Partner Profile', function () {
             properties: {
                 partnerId: {
                     type: 'string',
-                    eq: 'ClassOneExchangeHtb'
+                    eq: 'C1XHtb'
                 },
                 namespace: {
                     type: 'string',
@@ -57,7 +57,7 @@ describe('Partner Profile', function () {
                 },
                 statsId: {
                     type: 'string',
-                    eq: 'COX'
+                    eq: 'c1x'
                 },
                 version: {
                     type: 'string'

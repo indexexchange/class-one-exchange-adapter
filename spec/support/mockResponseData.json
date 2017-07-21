@@ -1,5 +1,38 @@
+// c1x mock bid response
+// for SRA architectures, make this property a single object that contains the response.
 {
-    "bid": [],
-    "pass": [],
-    "deals": []
+    "bids": {
+        "div-gpt-ad-1498193081995-0": {
+            "cpm": 2.9,
+            "ad": "<div><a target=\"_new\" href=\"http://c1exchange.com\"><img src=\"https://placeholdit.imgix.net/~text?txtsize=38&txt=C1X%20Ad%20300x600&w=300&h=600&txttrack=0\"></a></div>",
+            "width": "300",
+            "height": "600"
+        },
+        "div-gpt-ad-222": {
+            "cpm": 2.9,
+            "ad": "<div><a target=\"_new\" href=\"http://c1exchange.com\"><img src=\"https://placeholdit.imgix.net/~text?txtsize=38&txt=C1X%20Ad%20300x600&w=300&h=600&txttrack=0\"></a></div>",
+            "width": "300",
+            "height": "250"
+        },
+        "div-gpt-ad-333": {
+            "cpm": 2.9,
+            "ad": "<div> test 3 </div>",
+            "width": "728",
+            "height": "90"
+        },
+    },
+    "pass": { // Contains only passes
+        "div-gpt-ad-1498193081995-0": {
+            "pass": true
+        },
+        "div-gpt-ad-222": {
+            "pass": true
+        },
+        "div-gpt-ad-333": {
+            "pass": true
+        },
+    },
+    "deals": {
+
+    }
 }
