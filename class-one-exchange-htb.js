@@ -296,7 +296,6 @@ function C1XHtb(configs) {
 
             if (curReturnParcel.xSlotRef.adId in bids) {
                 curBid = bids[curReturnParcel.xSlotRef.adId];
-                console.log('matched!');
             }
 
             /* ------------------------------------------------------------------------------------*/
@@ -306,7 +305,7 @@ function C1XHtb(configs) {
             headerStatsInfo[curReturnParcel.htSlot.getId()] = [curReturnParcel.xSlotName];
 
             /* No matching bid found so its a pass */
-            if (!curBid || curBid.pass) {
+            if (!curBid || curBid.bid == false ) {
                 if (__profile.enabledAnalytics.requestTime) {
                     __baseClass._emitStatsEvent(sessionId, 'hs_slot_pass', headerStatsInfo);
                 }
@@ -321,7 +320,7 @@ function C1XHtb(configs) {
             var bidPrice = curBid.cpm;
             var bidSize = [curBid.width, curBid.height];
             var bidCreative = curBid.ad;
-            var bidDealId = null;
+            var bidDealId = null; // do not have dealId in our bid response
 
             /* ---------------------------------------------------------------------------------------*/
 
@@ -517,7 +516,7 @@ function C1XHtb(configs) {
          * ---------------------------------- */
 
         //? if (DEBUG) {
-        __type__: 'ClassOneExchangeHtb',
+        __type__: 'C1XHtb',
         //? }
 
         //? if (TEST) {

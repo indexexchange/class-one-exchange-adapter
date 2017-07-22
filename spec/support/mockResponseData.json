@@ -7,13 +7,13 @@
             "height": "600"
         },
         "div-gpt-ad-222": {
-            "cpm": 2.9,
+            "cpm": 2.5,
             "ad": "<div><a target=\"_new\" href=\"http://c1exchange.com\"><img src=\"https://placeholdit.imgix.net/~text?txtsize=38&txt=C1X%20Ad%20300x600&w=300&h=600&txttrack=0\"></a></div>",
             "width": "300",
             "height": "250"
         },
         "div-gpt-ad-333": {
-            "cpm": 2.9,
+            "cpm": 3.1,
             "ad": "<div> test 3 </div>",
             "width": "728",
             "height": "90"
@@ -21,13 +21,13 @@
     },
     "pass": {
         "div-gpt-ad-111": {
-            "pass": true
+            "bid": false
         },
         "div-gpt-ad-222": {
-            "pass": true
+            "bid": false
         },
         "div-gpt-ad-333": {
-            "pass": true
+            "bid": false
         }
     },
     "deals": {

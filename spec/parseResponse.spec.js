@@ -133,7 +133,6 @@ describe('parseResponse', function () {
                         }
                     }
                 }, returnParcels[i]);
-                //console.log(result.valid);
                 expect(result.valid, result.format()).to.be.true;
             }
         });
@@ -149,18 +148,23 @@ describe('parseResponse', function () {
             if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
-
-                /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
-
                 /* Add test cases to test against each of the parcel's set fields
                  * to make sure the response was parsed correctly.
                  *
                  * The parcels have already been parsed and should contain all the
                  * necessary demand.
                  */
+                var curBid;
+                var curReturnParcel = returnParcels[i];
+                if(curReturnParcel.xSlotRef.adId in mockData) {
+                    curBid = mockData[curReturnParcel.xSlotRef.adId];
+                }
 
                 expect(returnParcels[i]).to.exist;
+                expect(curReturnParcel.size).to.have.ordered.members([curBid.width, curBid.height])
+                expect(curReturnParcel.targetingType).to.equal('slot');
+                expect(curReturnParcel.adm).to.equal(curBid.ad);
+                expect(curReturnParcel.price).to.equal(curBid.cpm);
             }
         });
         /* -----------------------------------------------------------------------*/
@@ -205,18 +209,14 @@ describe('parseResponse', function () {
             if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
-
-                /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
-
                 /* Add test cases to test against each of the parcel's set fields
                  * to make sure the response was parsed correctly.
                  *
                  * The parcels have already been parsed and should contain all the
                  * necessary demand.
                  */
-
                 expect(returnParcels[i]).to.exist;
+                expect(returnParcels[i]).to.not.have.property('size','adm','price','targetingType');
             }
         });
         /* -----------------------------------------------------------------------*/
