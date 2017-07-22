@@ -89,7 +89,6 @@ describe('parseResponse', function () {
             }
 
             for(var i = 0; i < returnParcels.length; i++) {
-                //console.log(returnParcels[i]);
                 var result = inspector.validate({
                     type: 'object',
                     properties: {
@@ -134,7 +133,7 @@ describe('parseResponse', function () {
                         }
                     }
                 }, returnParcels[i]);
-                console.log(result.valid);
+                //console.log(result.valid);
                 expect(result.valid, result.format()).to.be.true;
             }
         });
@@ -180,10 +179,6 @@ describe('parseResponse', function () {
             if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
-
-                /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
-
                 var result = inspector.validate({
                     type: 'object',
                     properties: {
@@ -240,10 +235,6 @@ describe('parseResponse', function () {
             if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
-
-                /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
-
                 var result = inspector.validate({
                     type: 'object',
                     properties: {

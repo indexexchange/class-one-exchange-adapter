@@ -4,7 +4,11 @@
         "1": {
             "adId": "div-gpt-ad-111",
             "siteId": "999",
-            "sizes": [ [300, 250], [300, 600] ]
+            "sizes": [ [300, 250], [300, 600] ],
+            "floorPriceMap": {
+                "300x250": 4.00
+            },
+            "dspid": "DSP_1"
         },
         "2": {
             "adId": "div-gpt-ad-222",

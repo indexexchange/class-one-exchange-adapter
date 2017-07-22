@@ -150,25 +150,25 @@ function C1XHtb(configs) {
         /* ---------------------- PUT CODE HERE ------------------------------------ */
         var queryObj = {};
         var callbackId = System.generateUniqueId();
-        var baseUrl = Browser.getProtocol() + '//ht-integration.c1exchange.com:9000/ht';
+        var baseUrl = Browser.getProtocol() + 'ht-integration.c1exchange.com:9000/ht';
 
         var parcelsAmount = returnParcels.length;
         var bids = returnParcels;
-        queryObj.adunits = parcelsAmount;
+        queryObj.adunits = parcelsAmount; //total number of ad units in this request
 
-
-        // TODO: pixel ID, site ID
+        // TODO: pixel ID
         for(var i = 0; i < parcelsAmount; i++) {
             let bid = bids[i].xSlotRef;
             let bidAdUnitIdKey = 'a' + (i+1).toString();
             let bidSizeKey = 'a' + (i+1).toString() + 's';
             let floorPriceKey =  'a' + (i+1).toString() + 'p';
 
-            // queryObj.site = bid.siteId;
             queryObj[bidAdUnitIdKey] = bid.adId;
 
             let sizeStr = bid.sizes.reduce(function(prev, current) { return prev + (prev === '' ? '' : ',') + current.join('x') }, '');
             queryObj[bidSizeKey] = '[' +sizeStr + ']';
+
+            queryObj.site = bid.siteId; // Only one siteId will be applied in a single request
 
             // we only map one ad size to the floor price in a bid at this moment
             if('floorPriceMap' in bid) {
@@ -189,6 +189,8 @@ function C1XHtb(configs) {
         }
 
         queryObj.rid = new Date().getTime(); // cache busting
+        //queryObj.rid = Utilities.now(); // cache busting
+
         /* -------------------------------------------------------------------------- */
 
         return {
@@ -384,7 +386,7 @@ function C1XHtb(configs) {
             curReturnParcel.targeting.pubKitAdId = pubKitAdId;
             //? }
 
-            console.log(curReturnParcel);
+            // console.log(curReturnParcel);
         }
     }
 
@@ -432,7 +434,7 @@ function C1XHtb(configs) {
             lineItemType: Constants.LineItemTypes.ID_AND_SIZE,
             callbackType: Partner.CallbackTypes.CALLBACK_NAME,
             architecture: Partner.Architectures.SRA,
-            requestType: Partner.RequestTypes.ANY // Request type, jsonp, ajax, or any.
+            requestType: Partner.RequestTypes.JSONP // Use only JSONP for bid requests
         };
         /* ---------------------------------------------------------------------------------------*/
 
@@ -454,8 +456,8 @@ function C1XHtb(configs) {
         var bidTransformerConfigs = {
             //? if (FEATURES.GPT_LINE_ITEMS) {
             targeting: {
-                inputCentsMultiplier: 100, // Input is in dollars
-                outputCentsDivisor: 100, // Output as dollars
+                inputCentsMultiplier: 100, //  Multiply input bids by this to get cents
+                outputCentsDivisor: 100, // Divide output bids in cents by this
                 outputPrecision: 2, // With 2 decimal places
                 roundingType: 'FLOOR', // jshint ignore:line
                 floor: 0,
@@ -468,6 +470,7 @@ function C1XHtb(configs) {
                 }]
             },
             //? }
+            // Not sure what is this part of config for
             //? if (FEATURES.RETURN_PRICE) {
             price: {
                 inputCentsMultiplier: 1, // Input is in cents
