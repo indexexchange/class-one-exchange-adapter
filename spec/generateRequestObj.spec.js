@@ -115,10 +115,17 @@ describe('generateRequestObj', function () {
 
         /* ---------- ADD MORE TEST CASES TO TEST AGAINST REAL VALUES ------------*/
         it('should correctly build a url', function () {
-            /* Write unit tests to verify that your bid request url contains the correct
-                * request params, url, etc.
-                */
+            var requestObjData = requestObject.data;
+            var requestUrl = requestObject.url;
+
             expect(requestObject).to.exist;
+            expect(requestObjData).to.exist;
+            expect(requestObjData).to.include({ 'a1': 'div-gpt-ad-111',
+                                                'a1s': '[300x250,300x600]',
+                                                'a1p': 4.00,
+                                                'dspid': 'DSP_1'
+                                            });
+            expect(requestUrl).to.equal('http://ht-integration.c1exchange.com:9000/ht');
         });
         /* -----------------------------------------------------------------------*/
 

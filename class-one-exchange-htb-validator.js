@@ -33,6 +33,27 @@ var Inspector = require('../../../libs/external/schema-inspector.js');
  * schema-insepctor to perform the validation. Information about it can be found here:
  * https://atinux.fr/schema-inspector/.
  */
+
+/** Example Configs for C1X bidder
+*    "configs": {
+*        "xSlots": {
+*            "xSlot1": {
+                 "adId": "div-gpt-ad-149819308100",
+*                "siteID": "999",
+*                "sizes": [ [300, 250], [300, 600] ]
+*            },
+*            "xSlot2": {
+*                "siteID": "345",
+*                "sizes": [ [300, 250] ]
+*            }
+*        },
+*        "mapping": {
+*            "htSlotID-1": [ "xSlot1" ],
+*            "htSlotID-2": [ "xSlot2" ]
+*        }
+*    }
+**/
+
 var partnerValidator = function (configs) {
     var result = Inspector.validate({
         type: 'object',
@@ -43,11 +64,26 @@ var partnerValidator = function (configs) {
                     '*': {
                         type: 'object',
                         properties: {
-                            placementId: {
+                            adId: {
+                                type: 'string'
+                            },
+                            siteId: {
                                 type: 'string',
                                 minLength: 1
+                            },
+                            sizes: {
+                                type: [ 'array' ],
+                                minLength: 2
                             }
                         }
+                    }
+                }
+            },
+            mapping: {
+                type: 'object',
+                properties: {
+                    '*': {
+                        type: [ 'string' ]
                     }
                 }
             }

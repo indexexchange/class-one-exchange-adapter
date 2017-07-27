@@ -1,5 +1,5 @@
 /**
- * @author:    Partner
+ * @author:    C1X Inc.
  * @license:   UNLICENSED
  *
  * @copyright: Copyright (c) 2017 by Index Exchange. All rights reserved.
@@ -44,7 +44,7 @@ var Whoopsie = require('whoopsie.js');
  *
  * @class
  */
-function ClassOneExchangeHtb(configs) {
+function C1XHtb(configs) {
     /* =====================================
      * Data
      * ---------------------------------- */
@@ -150,12 +150,46 @@ function ClassOneExchangeHtb(configs) {
         /* ---------------------- PUT CODE HERE ------------------------------------ */
         var queryObj = {};
         var callbackId = System.generateUniqueId();
+        var baseUrl = Browser.getProtocol() + 'ht-integration.c1exchange.com:9000/ht';
 
-        /* Change this to your bidder endpoint.*/
-        var baseUrl = Browser.getProtocol() + '//someAdapterEndpoint.com/bid';
+        var parcelsAmount = returnParcels.length;
+        var bids = returnParcels;
+        queryObj.adunits = parcelsAmount; //total number of ad units in this request
 
-        /* ---------------- Craft bid request using the above returnParcels --------- */
+        // TODO: pixel ID
+        for(var i = 0; i < parcelsAmount; i++) {
+            let bid = bids[i].xSlotRef;
+            let bidAdUnitIdKey = 'a' + (i+1).toString();
+            let bidSizeKey = 'a' + (i+1).toString() + 's';
+            let floorPriceKey =  'a' + (i+1).toString() + 'p';
 
+            queryObj[bidAdUnitIdKey] = bid.adId;
+
+            let sizeStr = bid.sizes.reduce(function(prev, current) { return prev + (prev === '' ? '' : ',') + current.join('x') }, '');
+            queryObj[bidSizeKey] = '[' +sizeStr + ']';
+
+            queryObj.site = bid.siteId; // Only one siteId will be applied in a single request
+
+            // we only map one ad size to the floor price in a bid at this moment
+            if('floorPriceMap' in bid) {
+                let adUnitSize = bid.sizes[0].join('x');
+                if(adUnitSize in bid.floorPriceMap) {
+                    queryObj[floorPriceKey] = bid.floorPriceMap[adUnitSize];
+                }
+            }
+
+            if('endpoint' in bid) {
+                baseUrl = Browser.getProtocol() + bid.endpoint;
+            }
+
+            if('dspid' in bid) {
+                queryObj.dspid = bid.dspid;
+            }
+
+        }
+
+        queryObj.rid = new Date().getTime(); // cache busting
+        //queryObj.rid = Utilities.now(); // cache busting
 
         /* -------------------------------------------------------------------------- */
 
@@ -177,6 +211,8 @@ function ClassOneExchangeHtb(configs) {
      * If the endpoint does not have an appropriate field for this, set the profile's
      * callback type to CallbackTypes.CALLBACK_NAME and omit this function.
      */
+
+     // C1X endpoint won't return an arbitrary ID, therefore omit this func
     function adResponseCallback(adResponse) {
         /* get callbackId from adResponse here */
         var callbackId = 0;
@@ -249,19 +285,15 @@ function ClassOneExchangeHtb(configs) {
             /* ----------- Fill this out to find a matching bid for the current parcel ------------- */
             var curBid;
 
-            for (var i = 0; i < bids.length; i++) {
+            /**
+             * This section maps internal returnParcels and demand returned from the bid request.
+             * In order to match them correctly, they must be matched via some criteria. This
+             * is usually some sort of placements or inventory codes. Please replace the someCriteria
+             * key to a key that represents the placement in the configuration and in the bid responses.
+             */
 
-                /**
-                 * This section maps internal returnParcels and demand returned from the bid request.
-                 * In order to match them correctly, they must be matched via some criteria. This
-                 * is usually some sort of placements or inventory codes. Please replace the someCriteria
-                 * key to a key that represents the placement in the configuration and in the bid responses.
-                 */
-
-                if (curReturnParcel.xSlotRef.someCriteria === bids[i].someCriteria) {
-                    curBid = bids[i];
-                    break;
-                }
+            if (curReturnParcel.xSlotRef.adId in bids) {
+                curBid = bids[curReturnParcel.xSlotRef.adId];
             }
 
             /* ------------------------------------------------------------------------------------*/
@@ -271,7 +303,7 @@ function ClassOneExchangeHtb(configs) {
             headerStatsInfo[curReturnParcel.htSlot.getId()] = [curReturnParcel.xSlotName];
 
             /* No matching bid found so its a pass */
-            if (!curBid) {
+            if (!curBid || curBid.bid == false ) {
                 if (__profile.enabledAnalytics.requestTime) {
                     __baseClass._emitStatsEvent(sessionId, 'hs_slot_pass', headerStatsInfo);
                 }
@@ -283,10 +315,10 @@ function ClassOneExchangeHtb(configs) {
             /* Using the above variable, curBid, extract various information about the bid and assign it to
             * these local variables */
 
-            var bidPrice = curBid.price; /* the bid price for the given slot */
-            var bidSize = [curBid.width, curBid.height]; /* the size of the given slot */
-            var bidCreative = curBid.adm; /* the creative/adm for the given slot that will be rendered if is the winner. */
-            var bidDealId = curBid.dealid; /* the dealId if applicable for this slot. */
+            var bidPrice = curBid.cpm;
+            var bidSize = [curBid.width, curBid.height];
+            var bidCreative = curBid.ad;
+            var bidDealId = null; // do not have dealId in our bid response
 
             /* ---------------------------------------------------------------------------------------*/
 
@@ -370,13 +402,13 @@ function ClassOneExchangeHtb(configs) {
 
         /* ---------- Please fill out this partner profile according to your module ------------*/
         __profile = {
-            partnerId: 'ClassOneExchangeHtb', // PartnerName
-            namespace: 'ClassOneExchangeHtb', // Should be same as partnerName
-            statsId: 'COX', // Unique partner identifier
+            partnerId: 'C1XHtb', // PartnerName
+            namespace: 'C1XHtb', // Should be same as partnerName
+            statsId: 'c1x', // Unique partner identifier
             version: '2.0.0',
             targetingType: 'slot',
             enabledAnalytics: {
-                requestTime: true
+                requestTime: false
             },
             features: {
                 demandExpiry: {
@@ -389,15 +421,15 @@ function ClassOneExchangeHtb(configs) {
                 }
             },
             targetingKeys: { // Targeting keys for demand, should follow format ix_{statsId}_id
-                id: 'ix_cox_id',
-                om: 'ix_cox_cpm',
-                pm: 'ix_cox_cpm',
-                pmid: 'ix_cox_dealid'
+                id: 'ix_c1x_id',
+                om: 'ix_c1x_cpm',
+                pm: 'ix_c1x_cpm',
+                pmid: 'ix_c1x_dealid'
             },
             lineItemType: Constants.LineItemTypes.ID_AND_SIZE,
-            callbackType: Partner.CallbackTypes.ID, // Callback type, please refer to the readme for details
-            architecture: Partner.Architectures.SRA, // Request architecture, please refer to the readme for details
-            requestType: Partner.RequestTypes.ANY // Request type, jsonp, ajax, or any.
+            callbackType: Partner.CallbackTypes.CALLBACK_NAME,
+            architecture: Partner.Architectures.SRA,
+            requestType: Partner.RequestTypes.JSONP // Use only JSONP for bid requests
         };
         /* ---------------------------------------------------------------------------------------*/
 
@@ -419,9 +451,9 @@ function ClassOneExchangeHtb(configs) {
         var bidTransformerConfigs = {
             //? if (FEATURES.GPT_LINE_ITEMS) {
             targeting: {
-                inputCentsMultiplier: 1, // Input is in cents
-                outputCentsDivisor: 1, // Output as cents
-                outputPrecision: 0, // With 0 decimal places
+                inputCentsMultiplier: 100, //  Multiply input bids by this to get cents
+                outputCentsDivisor: 100, // Divide output bids in cents by this
+                outputPrecision: 2, // With 2 decimal places
                 roundingType: 'FLOOR', // jshint ignore:line
                 floor: 0,
                 buckets: [{
@@ -433,6 +465,7 @@ function ClassOneExchangeHtb(configs) {
                 }]
             },
             //? }
+            // Not sure what is this part of config for
             //? if (FEATURES.RETURN_PRICE) {
             price: {
                 inputCentsMultiplier: 1, // Input is in cents
@@ -479,7 +512,7 @@ function ClassOneExchangeHtb(configs) {
          * ---------------------------------- */
 
         //? if (DEBUG) {
-        __type__: 'ClassOneExchangeHtb',
+        __type__: 'C1XHtb',
         //? }
 
         //? if (TEST) {
@@ -511,4 +544,4 @@ function ClassOneExchangeHtb(configs) {
 // Exports /////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-module.exports = ClassOneExchangeHtb;
+module.exports = C1XHtb;
