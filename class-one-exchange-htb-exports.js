@@ -6,6 +6,11 @@
  *  window namespace here, but this is discouraged if it's not strictly needed.
  */
 
-shellInterface.ClassOneExchangeHtb = {
-    render: SpaceCamp.services.RenderService.renderDfpAd.bind(null, 'ClassOneExchangeHtb')
+shellInterface.C1XHtb = {
+    render: SpaceCamp.services.RenderService.renderDfpAd.bind(null, 'C1XHtb')
 };
+
+if (__directInterface.Layers.PartnersLayer.Partners.C1XHtb) {
+    shellInterface.C1XHtb = shellInterface.C1XHtb || {};
+    shellInterface.C1XHtb.adResponseCallbacks = __directInterface.Layers.PartnersLayer.Partners.C1XHtb.adResponseCallbacks;
+} // TO DO: check with IX about the callback naming. 
