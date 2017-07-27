@@ -276,13 +276,11 @@ function C1XHtb(configs) {
          /* ---------- Process adResponse and extract the bids into the bids array ------------*/
 
         var bids = adResponse;
-        //console.log(bids);
 
         /* --------------------------------------------------------------------------------- */
 
         for (var j = 0; j < returnParcels.length; j++) {
             var curReturnParcel = returnParcels[j];
-            // console.log(curReturnParcel);
 
             /* ----------- Fill this out to find a matching bid for the current parcel ------------- */
             var curBid;
@@ -384,8 +382,6 @@ function C1XHtb(configs) {
             );
             curReturnParcel.targeting.pubKitAdId = pubKitAdId;
             //? }
-
-            // console.log(curReturnParcel);
         }
     }
 
