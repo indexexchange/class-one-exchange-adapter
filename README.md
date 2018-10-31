@@ -2,7 +2,6 @@
 1. [Introduction](#intro)
     * [Repository Structure](#Repository)
     * [Getting Started](#gettingStarted)
-    * [Creative Tag](#creative)
 2. [Requirements](#requirements)
 3. [Partner Module Overview](#overview)
     * [Configuration](#configuration)
@@ -10,74 +9,47 @@
     * [Creating a Partner Module](#creatingPartnerModule)
 4. [Utility Libraries](#helpers)
     * [Utils](#utils)
-    * [Network](#network)
     * [BidRoundingTransformer](#bidRounding)
-5. [Testing](#testing)
-    * [Basic Tests](#basictests)
-    * [Writing Additional Tests](#additional)
+5. [Linting](#linting)
+6. [Debugging](#debugging)
+7. [Testing](#testing)
+8. [Code Submission Guidelines](#codeSubmissionGuidelines)
 
 # <a name='intro'></a>Introduction
 
-<b>Welcome to the Index Exchange Partner Certification Process! </b>
+<b>Welcome to the Index Exchange Partner Certification Process!</b>
 
 Below you will find everything you need to complete the certification process and be a part of the Header Tag Wrapper!
 
 ## <a name='Repository'></a>Repository Structure
-* `README.md`             -This is the main documentation file which should contain everything you need to complete the certification process. If anything is unclear, please refer to this document first.
-* `class-one-exchange-htb.js` - This is your partner module file, by default it contains a template divided into multiple sections which need to be completed.
-* `class-one-exchange-htb-validator.js` - This is the validator file for the configuration object that will be passed into your module.
-* `class-one-exchange-htb-exports.js` - A file that contains all of the modules exports (i.e. any functions that need to be exposed to the outside world).
-* `spec` - Contains the unit tests for the module.
-    * `mockPartnerConfig.json` - this is a mock partner config for your module that will be used for unit testing.
+* `README.md` - This is the main documentation file which should contain everything you need to complete the certification process. If anything is unclear, please refer to this document first.
+* `class-one-exchange-adapter-htb.js` - This is your partner module file, by default it contains a template divided into multiple sections which need to be completed.
+* `class-one-exchange-adapter-htb-validator.js` - This is the validator file for the configuration object that will be passed into your module.
+* `class-one-exchange-adapter-htb-exports.js` - A file that contains all of the modules exports (i.e. any functions that need to be exposed to the outside world).
 
-##  <a name='gettingStarted'></a>Getting Started
-1. <b>Complete the class-one-exchange-htb.js file </b>
-    * class-one-exchange-htb.js is where all of your adapter code will live.
+## <a name='gettingStarted'></a>Getting Started
+1. <b>Complete the class-one-exchange-adapter-htb.js file</b>
+    * class-one-exchange-adapter-htb.js is where all of your adapter code will live.
     * In order to complete the partner module correctly, please refer to the [Partner Module Overview](#overview) and the [Utility Libraries](#helpers) sections.
     * <b>Please refer to the [Partner Requirements and Guidelines](#requirements) when creating your module. Ensure requirements are met to streamline the review process.</b>
-2. <b>Complete the class-one-exchange-htb-validator.js file</b>
+2. <b>Complete the class-one-exchange-adapter-htb-validator.js file</b>
     * This file is where your partner-specific configurations will need to be validated.
     * Things like type and null checks will be done here.
-3. <b>Complete the class-one-exchange-htb-exports.js file</b>
-    * This file will contain any functions that need to be exported or exposed to the outside world. Things like render functions, custom callbacks, etc. Any legacy render functions will also need to be exposed here. Anything added to the `shellInterface.ClassOneExchangeHtb` will be accessible through `window.headertag.ClassOneExchangeHtb`
-4. <b> Run & Create Unit tests for your module</b>
-    * Inside the spec folder you will find a set of basic unit tests for your module.
-    * You must pass these basic unit tests before submitting your module.
-    * In addition, you should create more specific unit tests with actual values based on mock ad responses to confirm that your module is working as expected.
-    * Please refer to the [Testing](#testing) section below for more information.
-5. <b>Submitting for Review</b>
+3. <b>Complete the class-one-exchange-adapter-htb-exports.js file</b>
+    * This file will contain any functions that need to be exported or exposed to the outside world. Things like render functions, custom callbacks, etc. Any legacy render functions will also need to be exposed here. Anything added to the `shellInterface.ClassOneExchangeAdapterHtb` will be accessible through `window.headertag.ClassOneExchangeAdapterHtb`
+4. <b>Submitting for Review</b>
     * Once the module has been verified submit a pull request from the `development-v2`branch to the `master-v2` branch for the Index Exchange team to review. If everything is approved, your adapter will be officially certified!
 
-##  <a name='creative'></a> Standard HTW Creative Tag
-Our standard creative tag in dfp looks as follows:
-```html
-<script type="text/javascript">
-var w = window;
-for (var i = 0; i < 10; i++) {
-    w = w.parent;
-    if (w.headertag) {
-        try {
-            w.headertag.ClassOneExchangeHtb.render(document, %%PATTERN:TARGETINGMAP%%, '%%WIDTH%%', '%%HEIGHT%%');
-            break;
-        } catch (e) {
-            continue;
-        }
-    }
-}
-</script>
-```
-
-<br>
-
-# <a name='requirements'></a> Partner Requirements & Guildelines
-In order for your module to be successfully certified, please refer to the following list of requirements and guidelines.
-Items under required <b><u>must</b></u> be satisfied in order to pass the certification process. Items under guidelines are recommended for an optimal setup and should be followed if possible.
+# <a name='requirements'></a> Partner Requirements & Guidelines
+In order for your module to be successfully certified, please refer to the following list of requirements and guidelines. Items under required <b><u>must</b></u> be satisfied in order to pass the certification process. Items under guidelines are recommended for an optimal setup and should be followed if possible.
 
 ### General
 
 #### Required
 * The only targeting keys that can be set are predetermined by Index. The partner module should not be setting targeting on other keys.
 * Must support the following browsers: IE 9+, Edge, Chrome, Safari, and Firefox
+* Must run system tests in all supported browsers
+* Must not use polyfills
 
 #### Recommended
 * Please use our helper libraries when possible. Refer to our [Utility Libraries](#helpers) documentation below. All of the utility functions in this library are designed to be backwards compatible with supported browsers to ease cross-browser compatibility.
@@ -133,7 +105,7 @@ Example Partner Configuration Mapping
 ```javascript
 {
     "partners": {
-        "ClassOneExchangeHtb": {
+        "ClassOneExchangeAdapterHtb": {
             "enabled": true,
             "configs": {
                 "xSlots": {
@@ -162,7 +134,7 @@ Each parcel is an object in the following form:
 
 ```javascript
 {
-    "partnerId": "COX",
+    "partnerId": "COEX",
     "htSlot": {
       "__type__": "HeaderTagSlot"
     },
@@ -194,7 +166,7 @@ The wrapper requests demand from the partner modules for the required slots (pro
     * The wrapper calls `generateRequestObj(returnParcels)` for every partner module.
     * The adapter then crafts and returns a request object based on the parcels (containing slot information) specified.
     * The wrapper then sends out a bid request using the request object.
-    * Depending on how the adapter is set up and whether jsonp is supported, a response callback (`adResponseCallback`) is called.
+    * Depending on how the adapter is set up and whether JSONP is supported, a response callback (`adResponseCallback`) is called.
     * The adapter parses the response (`parseResponse`) and attaches the demand to the same returnParcels. It also registers the ad creative with the wrapper's render service.
     * The returnParcels are then sent back to the wrapper.
 5. The wrapper applies targeting using the demand from the returnParcels.
@@ -204,20 +176,18 @@ The wrapper requests demand from the partner modules for the required slots (pro
 
 ## <a name='creatingPartnerModule'></a> Creating a Partner Module
 
-In this section you will be filling out the class-one-exchange-htb.js, class-one-exchange-htb-exports.js, and the class-one-exchange-htb-validator.js files to create your module.
+In this section you will be filling out the class-one-exchange-adapter-htb.js, class-one-exchange-adapter-htb-exports.js, and the class-one-exchange-adapter-htb-validator.js files to create your module.
 
-### Step 0: Config Validation (`class-one-exchange-htb-validator.js`)
+### Step 0: Config Validation (`class-one-exchange-adapter-htb-validator.js`)
 Before you get started on writing the actual code for your module, you need to figure out what your partner configuration (refer to [Configuration](#configuration)) object will look like. This is crucial because it will determine the input (parcels) to your module's core functions.
 
-Once you have a basic idea of what this will look like, and how you will uniquely identify each slot on your server (via xSlot placementId or other inventory codes) you will need to validate this configuration. This validation will be performed by the wrapper using the `class-one-exchange-htb-validator.js` file.
+Once you have a basic idea of what this will look like, and how you will uniquely identify each slot on your server (via xSlot placementId or other inventory codes) you will need to validate this configuration. This validation will be performed by the wrapper using the `class-one-exchange-adapter-htb-validator.js` file.
 
-The `class-one-exchange-htb-validator.js` file contains a single export, a `partnerValidator` function, that takes in the configuration object that will be fed to your module's constructor (refer to [Configuration](#configuration) for an example layout) and validates it via type checks. The type checks are performed using an external library called `schema-inspector`, for which the documentation can be found here https://github.com/Atinux/schema-inspector.
-
-We have provided a very basic validation schema in `class-one-exchange-htb-validator.js` that is based off of the example `mockPartnerConfig.js` object found in the `spec/support` directory for testing (refer to the [Testing](#testing) section for the testing structure).
+The `class-one-exchange-adapter-htb-validator.js` file contains a single export, a `partnerValidator` function, that takes in the configuration object that will be fed to your module's constructor (refer to [Configuration](#configuration) for an example layout) and validates it via type checks. The type checks are performed using an external library called `schema-inspector`, for which the documentation can be found here https://github.com/Atinux/schema-inspector.
 
 Once you have filled this file out, you can continue actually writing your module!
 
-### Step 1: Partner Configuration (`class-one-exchange-htb.js`)
+### Step 1: Partner Configuration (`class-one-exchange-adapter-htb.js`)
 This section involves setting up the general partner configuration such as name, default pricing strategy as well as the general format of incoming/outgoing bids for the adapter. Please read the following descriptions and update the `__profile` variable if necessary.
 
 * <u>partnerId</u> - This is simply the name of our module, generally if your module is a bidder the name will end with Htb. The format of the name should be PartnerName{Type}.
@@ -228,11 +198,11 @@ This section involves setting up the general partner configuration such as name,
 * <u>enabledAnalytics</u> - The analytics that the wrapper will track for the module. requestTime is the only currently supported analytic, which records different times around when bid requests occur.
 * <u>features</u> - Extra features that a partner can support
     * <u>demandExpiry</u> - Setting an expiry time on the demand that partner returns.
-    * <u>rateLimiting</u> - Used for limiting the amount of requests to a given partner for a given slot on pages that support rate limiting in dfp.
+    * <u>rateLimiting</u> - Used for limiting the amount of requests to a given partner for a given slot on pages that support rate limiting in DFP.
 * <u>targetingKeys</u> - Different targeting keys that will be used to record demand for a given parcel.
-    * <u>id</u> - This key will be used to trace back the creative that has won in dfp for rendering.
-    * <u>om</u> - This key signals the open market bid in cpm.
-    * <u>pm</u> - This key signals the private market bid in cpm.
+    * <u>id</u> - This key will be used to trace back the creative that has won in DFP for rendering.
+    * <u>om</u> - This key signals the open market bid in CPM.
+    * <u>pm</u> - This key signals the private market bid in CPM.
     * <u>pmid</u> - This key signals the private market deal id.
 * <u>bidUnitInCents</u> - This tells the wrapper the unit of the bid price returned by your endpoint. The unit is in terms of cents, thus it should be set to 100 if your endpoint returns dollars, 1 if your endpoint returns cents, 0.1 if your endpoint returns tenth of a cent, etc. Note that this value must be an integer power of 10.
 
@@ -261,8 +231,8 @@ The last three properties are critical for the wrapper to understand how to inte
     * <u>Partner.RequestTypes.JSONP</u> -
         Use only JSONP for bid requests.
 
-### Step 2: Generate Request URL (`class-one-exchange-htb.js`)
-This step is for crafting a bid request url given a specific set of parcels.
+### Step 2: Generate Request URL (`class-one-exchange-adapter-htb.js`)
+This step is for crafting a bid request URL given a specific set of parcels.
 
 For this step, you must fill out the `generateRequestObj(returnParcels)` function. This function takes in an array of returnParcels.
 These are the parcel objects that contain the different slots for which demand needs to be requested.
@@ -276,8 +246,8 @@ Using this array of parcels, the adapter must craft a request object that will b
 The final returned object should looks something like this:
 ```javascript
 {
-    url: 'http://bidserver.com/api/bids' // base request url for a GET request
-    data: { // query string object that will be attached to the base url
+    url: 'http://bidserver.com/api/bids' // base request URL for a GET request
+    data: { // query string object that will be attached to the base URL
         slots: [
             {
                 placementId: 54321,
@@ -299,7 +269,7 @@ The final returned object should looks something like this:
 If your endpoint uses POST please add the following `networkParamOverrides` object to your return object:
 ```javascript
 {
-    url: 'http://bidserver.com/api/bids' // base request url for a POST request
+    url: 'http://bidserver.com/api/bids' // base request URL for a POST request
     data: { // will be the payload in the POST request
         slots: [
             {
@@ -327,14 +297,14 @@ If your endpoint uses POST please add the following `networkParamOverrides` obje
 
 More information can be found in the comment section of the function itself.
 
-### Step 3: Response Callback (`class-one-exchange-htb.js`)
+### Step 3: Response Callback (`class-one-exchange-adapter-htb.js`)
 Once the request from Step 2 finishes the `adResponseCallback` will be called to store the returned response in a `adResponseStore` object.
 
 If `__profile.callbackType` is set to `CALLBACK_NAME` or `NONE`, the wrapper will handle the callback for you and you can remove this function. If it is set to ID, you must retrieve the callback ID from the network response and store that response in the `_adResponseStore` object keyed by the callback ID.
 
 See the function in the template for details.
 
-### Step 4: Parsing and Storing Demand (`class-one-exchange-htb.js`)
+### Step 4: Parsing and Storing Demand (`class-one-exchange-adapter-htb.js`)
 In this step the adapter must parse the returned demand from the bid response and attach it the returnParcels objects.
 The returnParcels array will be one of the same arrays that was passed to `generateRequestObj` earlier.
 
@@ -353,13 +323,13 @@ Also please fill out each of the variables for each bid, these will be attached 
 * bidCreative - The creative/adm for the given slot that will be rendered if is the winner. Needs to be decoded and ready for a doc.write.
 * bidDealId - The dealId if applicable for this slot.
 * bidIsPass - True/false value for if the module returned a pass for this slot.
-* pixelUrl - If you require firing a tracking pixel after your creative wins and your tracking pixel is not part of the original adm that is rendered, please provide the decoded url of the tracking pixel here. This `pixelUrl` variable will then be passed to the `__renderPixel` function, which will then be called by either your module's specific `render` function or a generic rendering function depending on the line item setup.
+* pixelUrl - If you require firing a tracking pixel after your creative wins and your tracking pixel is not part of the original adm that is rendered, please provide the decoded URL of the tracking pixel here. This `pixelUrl` variable will then be passed to the `__renderPixel` function, which will then be called by either your module's specific `render` function or a generic rendering function depending on the line item setup.
 
 After filling out these objects, the resulting returnParcel objects should look something like this:
 
 ```javascript
 {
-    "partnerId": "COX",
+    "partnerId": "COEX",
     "htSlot": {
       "__type__": "HeaderTagSlot"
     },
@@ -374,8 +344,8 @@ After filling out these objects, the resulting returnParcel objects should look 
     // notice these new fields with demand
     "targetingType": "slot"
     "targeting" : {
-        "ix_cox_id": ["_230l09jd2"],
-        "ix_cox_cpm": ["300x250_2.50"]
+        "ix_coex_id": ["_230l09jd2"],
+        "ix_coex_cpm": ["300x250_2.50"]
     },
     "price": 2.50,
     "size": [300,250],
@@ -383,16 +353,16 @@ After filling out these objects, the resulting returnParcel objects should look 
 }
 ```
 
-### Step 5: Rendering Pixel (`class-one-exchange-htb.js`)
+### Step 5: Rendering Pixel (`class-one-exchange-adapter-htb.js`)
 This step is only required if your adapter needs to fire a tracking pixel after your creative renders. The function `__renderPixel` will be called right after we render your winning creative.
-It will be called with the paramter `pixelUrl` that needs to be filled out in `__parseResponse`.
+It will be called with the parameter `pixelUrl` that needs to be filled out in `__parseResponse`.
 
-### Step 6: Exports (`class-one-exchange-htb-exports.js`)
+### Step 6: Exports (`class-one-exchange-adapter-htb-exports.js`)
 In this step, you will be required to fill out the exports file for your module. This file will contain all of the functions that will need to be exposed to outside page if they need to be accessed outside of the wrapper. In the usual case, all you will need to change in this file is your partner module's name in the included snippet:
 
 ```javascript
-shellInterface.ClassOneExchangeHtb = { //shell interface is the window variable that is accessable through the window object, currently this will always be window.headertag
-    render: SpaceCamp.services.RenderService.renderDfpAd.bind(null, 'ClassOneExchangeHtb')
+shellInterface.ClassOneExchangeAdapterHtb = { //shell interface is the window variable that is accessible through the window object, currently this will always be window.headertag
+    render: SpaceCamp.services.RenderService.renderDfpAd.bind(null, 'ClassOneExchangeAdapterHtb')
 };
 ```
 
@@ -401,18 +371,18 @@ This snippet, exposes your module's render function to the outside world via the
 If your module requires using a custom adResponse callback via Partner.CallbackTypes.ID callback type, that callback will need to be exposed here. Which would look something like this:
 
 ```javascript
-if (__directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeHtb) {
-    shellInterface.ClassOneExchangeHtb = shellInterface.ClassOneExchangeHtb || {};
-    shellInterface.ClassOneExchangeHtb.adResponseCallback = __directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeHtb.adResponseCallback;
+if (__directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeAdapterHtb) {
+    shellInterface.ClassOneExchangeAdapterHtb = shellInterface.ClassOneExchangeAdapterHtb || {};
+    shellInterface.ClassOneExchangeAdapterHtb.adResponseCallback = __directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeAdapterHtb.adResponseCallback;
 }
 ```
 
 If your module requires using a custom adResponse callback via Partner.CallbackTypes.NAME callback type, that callback swill need to be exposed here. Which would look something like this:
 
 ```javascript
-if (__directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeHtb) {
-    shellInterface.ClassOneExchangeHtb = shellInterface.ClassOneExchangeHtb || {};
-    shellInterface.ClassOneExchangeHtb.adResponseCallbacks = __directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeHtb.adResponseCallbacks;
+if (__directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeAdapterHtb) {
+    shellInterface.ClassOneExchangeAdapterHtb = shellInterface.ClassOneExchangeAdapterHtb || {};
+    shellInterface.ClassOneExchangeAdapterHtb.adResponseCallbacks = __directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeAdapterHtb.adResponseCallbacks;
 }
 ```
 
@@ -426,7 +396,7 @@ There are a lot of helper objects available to you in you partner module.
 * `isString(entity)` - Return true if entity is a string.
 * `isBoolean(entity)` - Return true if entity is a boolean.
 * `isFunction(entity)` - Return true if entity is a function.
-* `isRegex(entity)` - Return true if entity is regex.
+* `isRegex(entity)` - Return true if entity is a regex.
 * `isEmpty(entity)`
     * if entity is a string, return true if string is empty.
     * if entity is an object, return true if the object has no properties.
@@ -463,7 +433,7 @@ There are a lot of helper objects available to you in you partner module.
 * `getScreenWidth()` - Returns screen.width.
 * `getScreenHeight()` - Returns screen.height.
 * `getReferrer()` - Return document.referrer.
-* `getPageUrl()` - Return the page's url.
+* `getPageUrl()` - Return the page's URL.
 * `getHostname()` - Return the page's hostname.
 * `getNearestEntity(entityName)` - Returns the entity with `entityName` in the nearest `window` scope.
 * `createHiddenIFrame(srcUrl, scope)` - Generate a hidden iframe and then append it to the body. Use the `srcUrl` and `scope` if provided.
@@ -480,205 +450,16 @@ There are a lot of helper objects available to you in you partner module.
     * `roundingType` - Should always be 1.
     * `buckets` - Buckets specifying rounding steps.
 
-Note that bid transformer instances suitable for dfp targeting and price reporting are already provided via `__baseClass._bidTransformers`. It is recommanded to use the provided instances as they are sufficient for almost all use cases.
+Note that bid transformer instances suitable for DFP targeting and price reporting are already provided via `__baseClass._bidTransformers`. It is recommended to use the provided instances as they are sufficient for almost all use cases.
+
+# <a name='linting'></a> Linting
+All code must pass the linting before it is submitted for review. Follow the instructions [here](https://knowledgebase.indexexchange.com/display/ADAPTER/ESLint) to run the linter.
+
+# <a name='debugging'></a> Debugging
+To walk through your bidder code and debug, follow the instructions [here](https://knowledgebase.indexexchange.com/display/ADAPTER/Adapter+Debugger).
 
 # <a name='testing'></a> Testing
+To implement the system tests, follow the instructions [here](https://knowledgebase.indexexchange.com/display/ADAPTER/Test+Cases).
 
-### General Test Structure
-For our unit testing suite we are using a combination of jasmine as a test runner, chai for assertion and schema-inspector for type validation.
-
-The spec folder is where all of the testing files are contained and is structured as follows:
-* spec - The main folder for all of unit testing
-    * support - Contains various stubs and mock data
-        * `mockPartnerConfig.json` - Contains your module mock partner config that is used throughout the suite
-        * `mockResponseData.json` - Contains your module's mock response data that is used in the `parseResponse.spec.js` test cases.
-        * `libraryStubData.js` - Stubs for various libraries
-        * `partnerStub.js` - Stub for the partner library
-        * `jasmine.json` - Jasmine test runner config
-    * `generateRequestObj.spec.js` - The spec for testing `generateRequestObj` function
-    * `parseResponse.spec.js` - The spec for testing `parseResponse` function
-    * `profile.spec.js` - The spec for testing the partner's `profile` configuration
-
-As you can see, we have divided the spec files based on the different functions/areas that you need to fill out for your module.
-
-### <a name='basictests'></a> Running Basic Tests
-In order to submit your module for review, you must first pass all of the basic test cases included in the
-repository. In order to run these tests you must first install all the necessary npm packages by running `npm install`
-and then simply run the command `npm test` from the root of the repository to execute the tests. NPM version `3.
-8.6` and node version `v6.1.0` were used when developing these tests.
-
-Before running the `npm test` command you must first fill out both the `mockPartnerConfig.json` to contain a correct sample configuration for your partner. Based on this configuration, parcels will be generated. For SRA partners, all of the slots outlined in your mockPartnerConfig will have corresponding parcels generated. For MRA, each of the generated slots will be fed into your functions <b> one at a time </b>.
-
-You will also need to fill out the `mockResponseData.json` file to match the `mockPartnerConfig.json`.  This file will contain a json object with the following three properties that need to be filled out accordingly.
-* `bid` - this is the response data array for in the case of real bids, this is used for the `should correctly parse bids` test cases. If your partner is MRA, keep this an array and put response objects inside it, one for every generated return parcel. If your partner is SRA, make this property a single object that contains the response.
-* `pass` - same as bid but used to mock bid passes.
-* `deals` - same as bid but used to mock deals. Should include some sort of `dealid` field.
-
-Note: These ad response should match your `mockPartnerConfig.json` in the sense that there should be the correct number of objects/demand in this object for each one of the returnParcels that are generated from your partnerConfig.
-
-For example, `mockPartnerConfig.json` contains a sample partner config. Here are the different `returnParcels` arrays that will be generated.
-
-<b><u>NOTE</b></u>: This is an array of parcels, for SRA architectures the <u>entire</u> array is fed into your functions but for MRA architectures <u> one parcel at a time </u> is fed into your functions. This is because MRA partners have one request per slot.
-
-```javascript
-var returnParcels = [{
-    partnerId: 'ClassOneExchangeHtb',
-    htSlot: { getId: function () {
-        return "htSlot1"
-    } },
-    ref: '',
-    xSlotRef: { placementId: '54321', sizes: [ [300,250] ] },
-    requestId: '_1496788873668',
-  },{
-    partnerId: 'ClassOneExchangeHtb',
-    htSlot: { getId: function () {
-        return "htSlot1"
-    } },
-    ref: '',
-    xSlotRef: { placementId: '12345', sizes: [ [300,600] ] },
-    requestId: '_1496788873668',
-  },{
-    partnerId: 'ClassOneExchangeHtb',
-    htSlot: { getId: function () {
-        return "htSlot2"
-    } },
-    ref: '',
-    xSlotRef: { placementId: '654321', sizes: [ [728,90] ] },
-    requestId: '_1496788873668',
-  }]
-```
-
-An example `mockResponseData.json` will be structured, according to the above returnParcel example, as follows depending on the architecture of your partner.
-
-For SRA:
-```javascript
-{
-    bid: {  // Notice how this is an object containing the demand for ALL the parcels.
-        54321: {
-            price: 23,
-            adm: '<script> test </script>'>,
-            width: 300,
-            height: 250
-        },
-        12345: {
-            price: 10,
-            adm: '<script> test2 </script>'>,
-            width: 300,
-            height: 600
-        },
-        654321: {
-            price: 15,
-            adm: '<script> test3 </script>'>,
-            width: 728,
-            height: 90
-        }
-    },
-    pass: { // Contains only passes
-        54321: {
-            pass: true
-        },
-        12345: {
-            pass: true
-        },
-        654321: {
-            pass: true
-        }
-    },
-    deals: { // Contains dealids
-        54321: {
-            price: 23,
-            adm: '<script> test </script>'>,
-            width: 300,
-            height: 250,
-            dealid: 'DEAL1'
-        },
-        12345: {
-            price: 10,
-            adm: '<script> test2 </script>'>,
-            width: 300,
-            height: 600,
-            dealid: 'DEAL2'
-        },
-        654321: {
-            price: 15,
-            adm: '<script> test3 </script>'>,
-            width: 728,
-            height: 90,
-            dealid: 'DEAL3'
-        }
-    }
-}
-
-```
-
-For MRA:
-```javascript
-{
-    bids: [ // notice this now an array. again this is because in MRA there is one request per slot
-            // and each object represents a single response
-        {
-            price: 23,
-            adm: '<script> test </script>'>,
-            width: 300,
-            height: 250,
-        },
-        {
-            price: 10,
-            adm: '<script> test2 </script>'>,
-            width: 300,
-            height: 600
-        },
-        {
-            price: 15,
-            adm: '<script> test3 </script>'>,
-            width: 728,
-            height: 90
-        }
-    ],
-    pass: [ // Contains only passes
-        {
-            pass: true
-        },
-        {
-            pass: true
-        },
-        {
-            pass: true
-        }
-    ],
-    deals: [
-        {
-            price: 23,
-            adm: '<script> test </script>'>,
-            width: 300,
-            height: 250,
-            dealid: 'DEAL1'
-        },
-        {
-            price: 10,
-            adm: '<script> test2 </script>'>,
-            width: 300,
-            height: 600,
-            dealid: 'DEAL2'
-        },
-        {
-            price: 15,
-            adm: '<script> test3 </script>'>,
-            width: 728,
-            height: 90,
-            dealid: 'DEAL3'
-        }
-    ]
-}
-
-```
-
-These tests perform basic type checks and make sure that all of the required fields have been filled out correctly. For example, if the mockData returned a bid, each of the parcels above for an SRA architecture bidder should contain new additional fields for price, size, creative, and targeting.
-
-However these tests are very basic and we encourage you to write your own test cases to further confirm the functionality of your module. Please refer to the next section on how to write additional test cases.
-
-### <a name='additional'></a> Creating Additional Tests
-
-In order to create additional test cases and further verify your module, please fill out the `ADD MORE TEST CASES TO TEST AGAINST REAL VALUES` section in both `generateRequestObj.spec.js` and `parseResponse.spec.js` for your corresponding module architecture type.
-
-
+# <a name='codeSubmissionGuidelines'></a> Code Submission Guidelines
+Follow the steps [here](https://knowledgebase.indexexchange.com/display/ADAPTER/Adapter+Code+Submission+Guidelines) to submit your code for review to Index Exchange.
