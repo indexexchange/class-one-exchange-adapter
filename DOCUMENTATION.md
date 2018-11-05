@@ -1,4 +1,4 @@
-# ClassOneExchangeAdapter
+# ClassOneExchange
 ## General Compatibility
 |Feature|  |
 |---|---|
@@ -26,7 +26,7 @@
 ## Adapter Information
 | Info | |
 |---|---|
-| Partner Id | ClassOneExchangeAdapterHtb |
+| Partner Id | ClassOneExchangeHtb |
 | Ad Server Responds in (Cents, Dollars, etc) | |
 | Bid Type (Gross / Net) | |
 | GAM Key (Open Market) | |

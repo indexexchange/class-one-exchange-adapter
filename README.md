@@ -23,20 +23,20 @@ Below you will find everything you need to complete the certification process an
 
 ## <a name='Repository'></a>Repository Structure
 * `README.md` - This is the main documentation file which should contain everything you need to complete the certification process. If anything is unclear, please refer to this document first.
-* `class-one-exchange-adapter-htb.js` - This is your partner module file, by default it contains a template divided into multiple sections which need to be completed.
-* `class-one-exchange-adapter-htb-validator.js` - This is the validator file for the configuration object that will be passed into your module.
-* `class-one-exchange-adapter-htb-exports.js` - A file that contains all of the modules exports (i.e. any functions that need to be exposed to the outside world).
+* `class-one-exchange-htb.js` - This is your partner module file, by default it contains a template divided into multiple sections which need to be completed.
+* `class-one-exchange-htb-validator.js` - This is the validator file for the configuration object that will be passed into your module.
+* `class-one-exchange-htb-exports.js` - A file that contains all of the modules exports (i.e. any functions that need to be exposed to the outside world).
 
 ## <a name='gettingStarted'></a>Getting Started
-1. <b>Complete the class-one-exchange-adapter-htb.js file</b>
-    * class-one-exchange-adapter-htb.js is where all of your adapter code will live.
+1. <b>Complete the class-one-exchange-htb.js file</b>
+    * class-one-exchange-htb.js is where all of your adapter code will live.
     * In order to complete the partner module correctly, please refer to the [Partner Module Overview](#overview) and the [Utility Libraries](#helpers) sections.
     * <b>Please refer to the [Partner Requirements and Guidelines](#requirements) when creating your module. Ensure requirements are met to streamline the review process.</b>
-2. <b>Complete the class-one-exchange-adapter-htb-validator.js file</b>
+2. <b>Complete the class-one-exchange-htb-validator.js file</b>
     * This file is where your partner-specific configurations will need to be validated.
     * Things like type and null checks will be done here.
-3. <b>Complete the class-one-exchange-adapter-htb-exports.js file</b>
-    * This file will contain any functions that need to be exported or exposed to the outside world. Things like render functions, custom callbacks, etc. Any legacy render functions will also need to be exposed here. Anything added to the `shellInterface.ClassOneExchangeAdapterHtb` will be accessible through `window.headertag.ClassOneExchangeAdapterHtb`
+3. <b>Complete the class-one-exchange-htb-exports.js file</b>
+    * This file will contain any functions that need to be exported or exposed to the outside world. Things like render functions, custom callbacks, etc. Any legacy render functions will also need to be exposed here. Anything added to the `shellInterface.ClassOneExchangeHtb` will be accessible through `window.headertag.ClassOneExchangeHtb`
 4. <b>Submitting for Review</b>
     * Once the module has been verified submit a pull request from the `development-v2`branch to the `master-v2` branch for the Index Exchange team to review. If everything is approved, your adapter will be officially certified!
 
@@ -105,7 +105,7 @@ Example Partner Configuration Mapping
 ```javascript
 {
     "partners": {
-        "ClassOneExchangeAdapterHtb": {
+        "ClassOneExchangeHtb": {
             "enabled": true,
             "configs": {
                 "xSlots": {
@@ -176,18 +176,18 @@ The wrapper requests demand from the partner modules for the required slots (pro
 
 ## <a name='creatingPartnerModule'></a> Creating a Partner Module
 
-In this section you will be filling out the class-one-exchange-adapter-htb.js, class-one-exchange-adapter-htb-exports.js, and the class-one-exchange-adapter-htb-validator.js files to create your module.
+In this section you will be filling out the class-one-exchange-htb.js, class-one-exchange-htb-exports.js, and the class-one-exchange-htb-validator.js files to create your module.
 
-### Step 0: Config Validation (`class-one-exchange-adapter-htb-validator.js`)
+### Step 0: Config Validation (`class-one-exchange-htb-validator.js`)
 Before you get started on writing the actual code for your module, you need to figure out what your partner configuration (refer to [Configuration](#configuration)) object will look like. This is crucial because it will determine the input (parcels) to your module's core functions.
 
-Once you have a basic idea of what this will look like, and how you will uniquely identify each slot on your server (via xSlot placementId or other inventory codes) you will need to validate this configuration. This validation will be performed by the wrapper using the `class-one-exchange-adapter-htb-validator.js` file.
+Once you have a basic idea of what this will look like, and how you will uniquely identify each slot on your server (via xSlot placementId or other inventory codes) you will need to validate this configuration. This validation will be performed by the wrapper using the `class-one-exchange-htb-validator.js` file.
 
-The `class-one-exchange-adapter-htb-validator.js` file contains a single export, a `partnerValidator` function, that takes in the configuration object that will be fed to your module's constructor (refer to [Configuration](#configuration) for an example layout) and validates it via type checks. The type checks are performed using an external library called `schema-inspector`, for which the documentation can be found here https://github.com/Atinux/schema-inspector.
+The `class-one-exchange-htb-validator.js` file contains a single export, a `partnerValidator` function, that takes in the configuration object that will be fed to your module's constructor (refer to [Configuration](#configuration) for an example layout) and validates it via type checks. The type checks are performed using an external library called `schema-inspector`, for which the documentation can be found here https://github.com/Atinux/schema-inspector.
 
 Once you have filled this file out, you can continue actually writing your module!
 
-### Step 1: Partner Configuration (`class-one-exchange-adapter-htb.js`)
+### Step 1: Partner Configuration (`class-one-exchange-htb.js`)
 This section involves setting up the general partner configuration such as name, default pricing strategy as well as the general format of incoming/outgoing bids for the adapter. Please read the following descriptions and update the `__profile` variable if necessary.
 
 * <u>partnerId</u> - This is simply the name of our module, generally if your module is a bidder the name will end with Htb. The format of the name should be PartnerName{Type}.
@@ -231,7 +231,7 @@ The last three properties are critical for the wrapper to understand how to inte
     * <u>Partner.RequestTypes.JSONP</u> -
         Use only JSONP for bid requests.
 
-### Step 2: Generate Request URL (`class-one-exchange-adapter-htb.js`)
+### Step 2: Generate Request URL (`class-one-exchange-htb.js`)
 This step is for crafting a bid request URL given a specific set of parcels.
 
 For this step, you must fill out the `generateRequestObj(returnParcels)` function. This function takes in an array of returnParcels.
@@ -297,14 +297,14 @@ If your endpoint uses POST please add the following `networkParamOverrides` obje
 
 More information can be found in the comment section of the function itself.
 
-### Step 3: Response Callback (`class-one-exchange-adapter-htb.js`)
+### Step 3: Response Callback (`class-one-exchange-htb.js`)
 Once the request from Step 2 finishes the `adResponseCallback` will be called to store the returned response in a `adResponseStore` object.
 
 If `__profile.callbackType` is set to `CALLBACK_NAME` or `NONE`, the wrapper will handle the callback for you and you can remove this function. If it is set to ID, you must retrieve the callback ID from the network response and store that response in the `_adResponseStore` object keyed by the callback ID.
 
 See the function in the template for details.
 
-### Step 4: Parsing and Storing Demand (`class-one-exchange-adapter-htb.js`)
+### Step 4: Parsing and Storing Demand (`class-one-exchange-htb.js`)
 In this step the adapter must parse the returned demand from the bid response and attach it the returnParcels objects.
 The returnParcels array will be one of the same arrays that was passed to `generateRequestObj` earlier.
 
@@ -353,16 +353,16 @@ After filling out these objects, the resulting returnParcel objects should look 
 }
 ```
 
-### Step 5: Rendering Pixel (`class-one-exchange-adapter-htb.js`)
+### Step 5: Rendering Pixel (`class-one-exchange-htb.js`)
 This step is only required if your adapter needs to fire a tracking pixel after your creative renders. The function `__renderPixel` will be called right after we render your winning creative.
 It will be called with the parameter `pixelUrl` that needs to be filled out in `__parseResponse`.
 
-### Step 6: Exports (`class-one-exchange-adapter-htb-exports.js`)
+### Step 6: Exports (`class-one-exchange-htb-exports.js`)
 In this step, you will be required to fill out the exports file for your module. This file will contain all of the functions that will need to be exposed to outside page if they need to be accessed outside of the wrapper. In the usual case, all you will need to change in this file is your partner module's name in the included snippet:
 
 ```javascript
-shellInterface.ClassOneExchangeAdapterHtb = { //shell interface is the window variable that is accessible through the window object, currently this will always be window.headertag
-    render: SpaceCamp.services.RenderService.renderDfpAd.bind(null, 'ClassOneExchangeAdapterHtb')
+shellInterface.ClassOneExchangeHtb = { //shell interface is the window variable that is accessible through the window object, currently this will always be window.headertag
+    render: SpaceCamp.services.RenderService.renderDfpAd.bind(null, 'ClassOneExchangeHtb')
 };
 ```
 
@@ -371,18 +371,18 @@ This snippet, exposes your module's render function to the outside world via the
 If your module requires using a custom adResponse callback via Partner.CallbackTypes.ID callback type, that callback will need to be exposed here. Which would look something like this:
 
 ```javascript
-if (__directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeAdapterHtb) {
-    shellInterface.ClassOneExchangeAdapterHtb = shellInterface.ClassOneExchangeAdapterHtb || {};
-    shellInterface.ClassOneExchangeAdapterHtb.adResponseCallback = __directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeAdapterHtb.adResponseCallback;
+if (__directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeHtb) {
+    shellInterface.ClassOneExchangeHtb = shellInterface.ClassOneExchangeHtb || {};
+    shellInterface.ClassOneExchangeHtb.adResponseCallback = __directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeHtb.adResponseCallback;
 }
 ```
 
 If your module requires using a custom adResponse callback via Partner.CallbackTypes.NAME callback type, that callback swill need to be exposed here. Which would look something like this:
 
 ```javascript
-if (__directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeAdapterHtb) {
-    shellInterface.ClassOneExchangeAdapterHtb = shellInterface.ClassOneExchangeAdapterHtb || {};
-    shellInterface.ClassOneExchangeAdapterHtb.adResponseCallbacks = __directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeAdapterHtb.adResponseCallbacks;
+if (__directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeHtb) {
+    shellInterface.ClassOneExchangeHtb = shellInterface.ClassOneExchangeHtb || {};
+    shellInterface.ClassOneExchangeHtb.adResponseCallbacks = __directInterface.Layers.PartnersLayer.Partners.ClassOneExchangeHtb.adResponseCallbacks;
 }
 ```
 
